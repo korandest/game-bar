@@ -250,24 +250,16 @@
       border-radius: 6px;
     }
 
+    /* 카드 하단 플레이 버튼 정렬 */
     .card-bottom {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-end;
       align-items: center;
-      margin-top: 5px;
-    }
-
-    .star-score {
-      font-size: 0.8rem;
-      color: #f59e0b;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      margin-top: 6px;
     }
 
     .play-btn {
-      padding: 7px 18px;
+      padding: 7px 20px;
       background: #1e3a8a;
       color: #ffffff;
       border: none;
@@ -279,11 +271,12 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
     }
 
     .play-btn:hover {
       background: var(--primary);
+      transform: scale(1.02);
     }
 
     /* 로딩 및 안내 상태 */
@@ -331,14 +324,13 @@
   </main>
 
   <script>
-    // 전달해주신 구글 시트 ID 적용 완료
     const GOOGLE_SHEET_ID = "1wkQL5hJ_ocYOPhD2E3BG5q94JtHgxWIPP4TGC2iBs4E";
 
     let games = [];
     let selectedCategory = '전체';
     let searchQuery = '';
 
-    // 구글 시트 데이터 불러오기 (CORS 에러 없는 Google Visualization API 방식)
+    // 구글 시트 데이터 불러오기
     function fetchGamesFromSheet() {
       const listContainer = document.getElementById('gameList');
       listContainer.innerHTML = `
@@ -348,11 +340,9 @@
         </div>
       `;
 
-      // 이전 요청 스크립트 제거
       const oldScript = document.getElementById('gviz-sheet-script');
       if (oldScript) oldScript.remove();
 
-      // JSONP 방식으로 스크립트 생성 및 호출
       const script = document.createElement('script');
       script.id = 'gviz-sheet-script';
       script.src = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=responseHandler:handleSheetData&t=${Date.now()}`;
@@ -361,7 +351,7 @@
         listContainer.innerHTML = `
           <div class="status-msg">
             <i class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i>
-            <p>구글 시트를 읽어오지 못했습니다.<br>구글 시트 우측 상단 <b>[공유]</b> 버튼을 눌러 <b>'링크가 있는 모든 사용자 - 뷰어'</b>로 설정되어 있는지 확인해주세요.</p>
+            <p>구글 시트를 읽어오지 못했습니다.<br>구글 시트의 [공유] 설정이 '링크가 있는 모든 사용자(뷰어)'인지 확인해주세요.</p>
           </div>
         `;
       };
@@ -377,7 +367,7 @@
 
         rows.forEach(r => {
           const c = r.c;
-          if (!c || !c[0] || !c[0].v) return; // 제목이 비어 있는 행은 제외
+          if (!c || !c[0] || !c[0].v) return;
 
           const title = String(c[0].v).trim();
           const category = c[1] && c[1].v ? String(c[1].v).trim() : '기타';
@@ -431,7 +421,7 @@
       });
     }
 
-    // 게임 목록 카드 렌더링
+    // 게임 목록 카드 렌더링 (별점 제거 및 플레이 버튼 우측 정렬)
     function renderGames() {
       const listContainer = document.getElementById('gameList');
       listContainer.innerHTML = '';
@@ -470,10 +460,6 @@
               </div>
             </div>
             <div class="card-bottom">
-              <div class="star-score">
-                <i class="fa-solid fa-star"></i>
-                <span>3/5</span>
-              </div>
               <a href="${game.url}" target="_blank" rel="noopener noreferrer" class="play-btn">플레이</a>
             </div>
           </div>
@@ -482,13 +468,13 @@
       });
     }
 
-    // 검색창 입력 이벤트
+    // 실시간 검색창 이벤트
     document.getElementById('searchInput').addEventListener('input', (e) => {
       searchQuery = e.target.value;
       renderGames();
     });
 
-    // 시작 시 시트 데이터 호출
+    // 실행
     fetchGamesFromSheet();
   </script>
 </body>
