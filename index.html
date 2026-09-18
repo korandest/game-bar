@@ -192,8 +192,8 @@
     }
 
     .card-thumb {
-      width: 78px;
-      height: 78px;
+      width: 76px;
+      height: 76px;
       border-radius: 18px;
       object-fit: cover;
       background: #f1f5f9;
@@ -206,11 +206,12 @@
       min-width: 0;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      justify-content: center;
+      gap: 6px;
     }
 
     .card-title {
-      font-size: 1.05rem;
+      font-size: 1.08rem;
       font-weight: 700;
       color: var(--text-main);
       white-space: nowrap;
@@ -219,35 +220,12 @@
     }
 
     .card-desc {
-      font-size: 0.83rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-    }
-
-    .card-meta {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 3px;
-      font-size: 0.78rem;
-      color: #64748b;
-      font-weight: 500;
-    }
-
-    .progress-bar-wrap {
-      width: 65px;
-      height: 6px;
-      background-color: #e2e8f0;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: #10b981;
-      border-radius: 6px;
+      line-height: 1.3;
     }
 
     /* 카드 하단 플레이 버튼 정렬 */
@@ -255,11 +233,11 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .play-btn {
-      padding: 7px 20px;
+      padding: 7px 22px;
       background: #1e3a8a;
       color: #ffffff;
       border: none;
@@ -279,7 +257,7 @@
       transform: scale(1.02);
     }
 
-    /* 로딩 및 안내 상태 */
+    /* 상태 메시지 */
     .status-msg {
       text-align: center;
       padding: 60px 20px;
@@ -374,14 +352,8 @@
           const desc = c[2] && c[2].v ? String(c[2].v).trim() : '';
           const url = c[3] && c[3].v ? String(c[3].v).trim() : '#';
           const thumb = c[4] && c[4].v ? String(c[4].v).trim() : 'https://cdn-icons-png.flaticon.com/512/566/566985.png';
-          const level = c[5] && c[5].v ? String(c[5].v).trim() : '레벨 1/ 중';
-          
-          let progress = 50;
-          if (c[6] && c[6].v !== null && c[6].v !== undefined) {
-            progress = parseInt(c[6].v) || 50;
-          }
 
-          games.push({ title, category, desc, url, thumb, level, progress });
+          games.push({ title, category, desc, url, thumb });
         });
 
         renderCategories();
@@ -421,7 +393,7 @@
       });
     }
 
-    // 게임 목록 카드 렌더링 (별점 제거 및 플레이 버튼 우측 정렬)
+    // 게임 목록 카드 렌더링 (레벨, 진행률 제거 완료)
     function renderGames() {
       const listContainer = document.getElementById('gameList');
       listContainer.innerHTML = '';
@@ -452,13 +424,7 @@
           <img class="card-thumb" src="${game.thumb}" alt="${game.title}" onerror="this.src='${defaultThumb}'" />
           <div class="card-info">
             <div class="card-title" title="${game.title}">${game.title}</div>
-            <div class="card-desc" title="${game.desc}">${game.desc || '설명이 없습니다.'}</div>
-            <div class="card-meta">
-              <span>${game.level}</span>
-              <div class="progress-bar-wrap">
-                <div class="progress-bar-fill" style="width: ${game.progress}%;"></div>
-              </div>
-            </div>
+            <div class="card-desc" title="${game.desc}">${game.desc || '학습 게임을 즐겨보세요!'}</div>
             <div class="card-bottom">
               <a href="${game.url}" target="_blank" rel="noopener noreferrer" class="play-btn">플레이</a>
             </div>
@@ -474,7 +440,7 @@
       renderGames();
     });
 
-    // 실행
+    // 시작 시 실행
     fetchGamesFromSheet();
   </script>
 </body>
